@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "start:otel-verbose": "NEXT_OTEL_VERBOSE=1 next start"
+  },
+  "dependencies": {
+    "@vercel/otel": "latest",
+    "@opentelemetry/api": "^1.4.1",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "dotenv": "^17.4.2",
+    "next": "16.3.6",
+    "pg": "^8.23.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "prisma": "7.10.0",
+    "typescript": "^5"
+  }
+}

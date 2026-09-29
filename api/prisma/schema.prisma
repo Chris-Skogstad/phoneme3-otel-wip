@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "app/generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String       @unique
+  wordSearches WordSearch[]
+  wordles      Wordle[]
+  createdAt    DateTime     @default(now())
+}
+
+model Word {
+  id           String       @id @default(uuid())
+  text         String
+  locale       String
+  phonemes     String[]
+  hint         String?
+  createdAt    DateTime     @default(now())
+  wordSearches WordSearch[] @relation("WordSearchWords")
+  wordles      Wordle[]     @relation("WordleWords")
+
+  @@unique([text, locale])
+}
+
+model WordSearch {
+  id             String   @id @default(uuid())
+  title          String
+  difficulty     String
+  gridSize       Int
+  outputSettings Json?
+  words          Word[]   @relation("WordSearchWords")
+  creator    User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId      String
+  createdAt      DateTime @default(now())
+}
+
+model Wordle {
+  id             String   @id @default(uuid())
+  title          String
+  difficulty     String
+  outputSettings Json?
+  words          Word[]   @relation("WordleWords")
+  creator    User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId      String
+  createdAt      DateTime @default(now())
+}
+model ActivityEvent {
+  id           String   @id @default(uuid())
+  activityType String
+  eventType    String
+  activityId   String?
+  timeOnPageMs Int?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([eventType])
+  @@index([activityType])
+  @@index([createdAt])
+}

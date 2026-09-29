@@ -1,0 +1,99 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:3000"
+    depends_on:
+      - api
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  api:
+    build:
+      context: ./api
+      args:
+        DATABASE_URL: "postgresql://user:password@postgres:5432/mydb"
+    ports:
+      - "4080:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  jaegertracing:
+    image: jaegertracing/jaeger:latest
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14268"
+      - "14250"
+
+  zipkin-all-in-one:
+    image: openzipkin/zipkin:latest
+    restart: always
+    ports:
+      - "9411:9411"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.67.0
+    restart: always
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "1888:1888"
+      - "8888:8888"
+      - "8889:8889"
+      - "13133:13133"
+      - "4317:4317"
+      - "4318:4318"
+      - "55679:55679"
+    depends_on:
+      - jaegertracing
+      - zipkin-all-in-one
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+volumes:
+  postgres_data:

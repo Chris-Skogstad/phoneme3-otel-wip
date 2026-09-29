@@ -9,7 +9,8 @@ const links = [
   { href: "/wordle", label: "Wordle" },
   { href: "/word-search", label: "Word Search" },
   { href: "/word-bank", label: "Word Bank" },
-  { href: "/load-activity", label: "Load Activity" },
+  { href: "/load-activity", label: "Load Activity" },  
+{ href: "/dashboard", label: "Dashboard" },
 ];
 
 export default function Nav() {

@@ -11,8 +11,9 @@ test.describe('Word Bank - Builder CRUD', () => {
       // overlay didn't appear — nothing to dismiss
     }
 
-    // Fill in the word spelling and hint
-    await page.getByPlaceholder('Word spelling (e.g. SHIP)').fill('TESTWORD');
+        // Fill in the word spelling and hint (unique per run to avoid constraint collisions)
+    const uniqueWord = `TESTWORD${Date.now()}`;
+    await page.getByPlaceholder('Word spelling (e.g. SHIP)').fill(uniqueWord);
     await page.getByPlaceholder("Optional hint (e.g. 'a boat')").fill('a test entry');
 
     // Build the phoneme sequence by clicking phoneme tiles (using known AU-locale tokens)
@@ -26,7 +27,7 @@ test.describe('Word Bank - Builder CRUD', () => {
     // Confirm success message appears
     await expect(page.getByText('Word added!')).toBeVisible();
 
-    // Confirm the new word appears in the word list
-    await expect(page.getByText('TESTWORD')).toBeVisible();
+       // Confirm the new word appears in the word list
+    await expect(page.getByText(uniqueWord)).toBeVisible();
   });
 });

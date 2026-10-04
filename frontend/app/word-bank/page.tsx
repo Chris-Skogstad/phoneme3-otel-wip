@@ -46,9 +46,9 @@ export default function WordBankPage() {
         </div>
 
         <div className="flex flex-col gap-3 w-full items-center">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             Existing Words ({locale.toUpperCase()})
-          </h3>
+          </h2>
           {loading && <p className="text-gray-500">Loading...</p>}
           {!loading && words.length === 0 && (
             <p className="text-gray-500">No words yet for this locale.</p>

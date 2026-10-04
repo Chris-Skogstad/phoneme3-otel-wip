@@ -75,9 +75,9 @@ export default function AddWordForm({ onWordAdded }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg w-full max-w-lg">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
         Add a Word ({locale.toUpperCase()})
-      </h3>
+      </h2>
 
       <input
         type="text"
@@ -99,7 +99,7 @@ export default function AddWordForm({ onWordAdded }: Props) {
 
       <div className="flex gap-2 flex-wrap justify-center min-h-[3rem] items-center">
         {phonemes.length === 0 && (
-          <span className="text-gray-400 text-sm">Tap phonemes below to build the sequence</span>
+                    <span className="text-gray-600 dark:text-gray-400 text-sm">Tap phonemes below to build the sequence</span>
         )}
         {phonemes.map((p, i) => (
   <PhonemeTile key={i} token={p} state="default" size="md" />
